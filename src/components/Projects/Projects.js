@@ -62,7 +62,7 @@ function Projects() {
               imgPath={leaf}
               isBlog={false}
               title="Password Manager"
-              description="A simple yet secure desktop application built with Python and Tkinter that allows users to store, generate, and manage passwords for different websites and services. The app provides a user-friendly GUI, auto password generation, and secure local storage with basic encryption."
+              description="A simple yet secure desktop application built with Python and Tkinter that allows users to store, generate, and manage passwords for different websites and services. "
               ghLink="hhttps://github.com/Harish-Builds/Password_Manager"
               // demoLink="https://plant49-ai.herokuapp.com/"
             />
