@@ -84,7 +84,7 @@ function Projects() {
               imgPath={emotion}
               isBlog={false}
               title="Drowsiness Detection"
-              description="This project combines real-time video analysis with facial recognition to detect signs of driver fatigue. Using tools like OpenCV and NumPy on a compact Raspberry Pi Zero W, we created a low-cost, portable system to help prevent accidents caused by drowsy driving. It’s a perfect blend of computer vision, embedded systems, and real-world safety applications."
+              description="This project combines real-time video analysis with facial recognition to detect signs of driver fatigue. Using tools like OpenCV and NumPy on a compact Raspberry Pi Zero W, we created a low-cost, portable system to help prevent accidents caused by drowsy driving."
               ghLink="https://github.com/Harish-Builds/drowsi"
               // demoLink="https://blogs.soumya-jit.tech/"      <--------Please include a demo link here 
             />
