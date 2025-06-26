@@ -84,8 +84,8 @@ function Projects() {
               imgPath={emotion}
               isBlog={false}
               title="Drowsiness Detection"
-              description="TTo monitor a user's eye state in real-time and detect signs of drowsiness using computer vision techniques. If the system detects prolonged eye closure, it triggers an alert to prevent accidents—especially useful in automotive or workplace safety scenarios."
-              ghLink="https://github.com/soumyajit4419/Face_And_Emotion_Detection"
+              description="This project combines real-time video analysis with facial recognition to detect signs of driver fatigue. Using tools like OpenCV and NumPy on a compact Raspberry Pi Zero W, we created a low-cost, portable system to help prevent accidents caused by drowsy driving. It’s a perfect blend of computer vision, embedded systems, and real-world safety applications."
+              ghLink="https://github.com/Harish-Builds/drowsi"
               // demoLink="https://blogs.soumya-jit.tech/"      <--------Please include a demo link here 
             />
           </Col>
