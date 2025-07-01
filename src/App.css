@@ -1,3 +1,7 @@
+body{
+  overflow-x: hidden;
+}
+
 .App {
   text-align: center;
 }
@@ -27,6 +31,15 @@
 .App-link {
   color: #61dafb;
 }
+
+
+.resume canvas {
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+}
+
 
 @keyframes App-logo-spin {
   from {
