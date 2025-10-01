@@ -128,7 +128,6 @@ function ResumeNew() {
         <Row style={{ justifyContent: "center", margin: "20px 0" }}>
           <Button
             variant="primary"
-            onClick={handleDownload}
             style={{
               maxWidth: "250px",
               cursor: "pointer",
