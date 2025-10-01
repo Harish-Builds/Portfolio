@@ -6,15 +6,17 @@ import { AiOutlineDownload } from "react-icons/ai";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 
-// Configure PDF.js worker
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+// Configure PDF.js worker - Updated URL
+pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
-// PDF path
-const pdfPath = `${process.env.PUBLIC_URL}/HarishK_Resume.pdf`;
+// PDF path - use direct path since it's in public folder
+const pdfPath = "/HarishK_Resume.pdf";
 
 function ResumeNew() {
   const [pageWidth, setPageWidth] = useState(800);
   const [pageHeight, setPageHeight] = useState(1100);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const updateDimensions = () => {
@@ -44,6 +46,20 @@ function ResumeNew() {
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
+  function onDocumentLoadSuccess({ numPages }) {
+    setLoading(false);
+    setError(null);
+    console.log("PDF loaded successfully with", numPages, "pages");
+  }
+
+  function onDocumentLoadError(error) {
+    console.error("Error loading PDF:", error);
+    setLoading(false);
+    setError("Failed to load PDF. Please check if the file exists.");
+  }
+
+
+
   return (
     <div style={{ overflowX: "hidden" }}>
       <Container
@@ -60,95 +76,76 @@ function ResumeNew() {
       >
         <Particle />
 
-        {/* Top Download Button */}
-        <Row style={{ justifyContent: "center", margin: "20px 0" }}>
-          <a
-            href={pdfPath}
-            download="HarishK_Resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Button
-              variant="primary"
-              style={{
-                maxWidth: "250px",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = "translateY(-2px)";
-                e.target.style.boxShadow = "0 4px 12px rgba(0,123,255,0.3)";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = "translateY(0)";
-                e.target.style.boxShadow = "none";
-              }}
-            >
-              <AiOutlineDownload />
-              &nbsp;Download CV
-            </Button>
-          </a>
-        </Row>
-
         {/* Resume Preview */}
         <Row
           className="justify-content-center"
-          style={{ margin: 0, paddingBottom: "20px" }}
+          style={{ margin: "20px 0", paddingBottom: "20px" }}
         >
           <div
             style={{
               width: pageWidth,
-              height: pageHeight,
+              minHeight: pageHeight,
               border: "1px solid #ddd",
               boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
               backgroundColor: "white",
               overflow: "hidden",
               display: "flex",
               justifyContent: "center",
-              alignItems: "flex-start",
+              alignItems: "center",
+              position: "relative",
             }}
           >
-            <Document file={pdfPath} onLoadError={console.error}>
+            {loading && (
+              <div style={{ textAlign: "center", padding: "20px" }}>
+                <p>Loading PDF...</p>
+              </div>
+            )}
+            
+            {error && (
+              <div style={{ textAlign: "center", padding: "20px", color: "red" }}>
+                <p>{error}</p>
+              </div>
+            )}
+            
+            <Document 
+              file={pdfPath} 
+              onLoadSuccess={onDocumentLoadSuccess}
+              onLoadError={onDocumentLoadError}
+              loading={<div style={{ padding: "20px" }}>Loading document...</div>}
+            >
               <Page
                 pageNumber={1}
                 width={pageWidth}
-                height={pageHeight}
-                scale={1}
                 renderTextLayer={false}
                 renderAnnotationLayer={false}
+                loading={<div style={{ padding: "20px" }}>Loading page...</div>}
               />
             </Document>
           </div>
         </Row>
 
-        {/* Bottom Download Button */}
+        {/* Download Button */}
         <Row style={{ justifyContent: "center", margin: "20px 0" }}>
-          <a
-            href={pdfPath}
-            download="HarishK_Resume.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Button
+            variant="primary"
+            onClick={handleDownload}
+            style={{
+              maxWidth: "250px",
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-2px)";
+              e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,123,255,0.3)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "none";
+            }}
           >
-            <Button
-              variant="primary"
-              style={{
-                maxWidth: "250px",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = "translateY(-2px)";
-                e.target.style.boxShadow = "0 4px 12px rgba(0,123,255,0.3)";
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = "translateY(0)";
-                e.target.style.boxShadow = "none";
-              }}
-            >
-              <AiOutlineDownload />
-              &nbsp;Download CV
-            </Button>
-          </a>
+            <AiOutlineDownload />
+            &nbsp;Download CV
+          </Button>
         </Row>
       </Container>
     </div>
