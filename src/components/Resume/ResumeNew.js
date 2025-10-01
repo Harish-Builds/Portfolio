@@ -10,7 +10,7 @@ import "react-pdf/dist/Page/AnnotationLayer.css";
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 // PDF path - use direct path since it's in public folder
-const pdfPath = "/HarishK_Resume.pdf";
+const pdfPath = `${process.env.PUBLIC_URL}/HarishK_Resume.pdf`;
 
 function ResumeNew() {
   const [pageWidth, setPageWidth] = useState(800);
@@ -58,7 +58,14 @@ function ResumeNew() {
     setError("Failed to load PDF. Please check if the file exists.");
   }
 
-
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = pdfPath;
+    link.download = 'HarishK_Resume.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div style={{ overflowX: "hidden" }}>
@@ -112,6 +119,10 @@ function ResumeNew() {
               onLoadSuccess={onDocumentLoadSuccess}
               onLoadError={onDocumentLoadError}
               loading={<div style={{ padding: "20px" }}>Loading document...</div>}
+              options={{
+                cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
+                cMapPacked: true,
+              }}
             >
               <Page
                 pageNumber={1}
@@ -128,6 +139,7 @@ function ResumeNew() {
         <Row style={{ justifyContent: "center", margin: "20px 0" }}>
           <Button
             variant="primary"
+            onClick={handleDownload}
             style={{
               maxWidth: "250px",
               cursor: "pointer",
