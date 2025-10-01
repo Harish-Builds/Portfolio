@@ -4,25 +4,21 @@ import Button from "react-bootstrap/Button";
 import Particle from "../Particle";
 import { AiOutlineDownload } from "react-icons/ai";
 import { Document, Page, pdfjs } from "react-pdf";
-import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import "react-pdf/dist/esm/Page/TextLayer.css";
 
-// Configure PDF.js worker - Updated URL
-pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+// Configure PDF.js worker with specific version
+pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 // PDF path - use direct path since it's in public folder
 const pdfPath = `${process.env.PUBLIC_URL}/HarishK_Resume.pdf`;
 
 function ResumeNew() {
   const [pageWidth, setPageWidth] = useState(800);
-  const [pageHeight, setPageHeight] = useState(1100);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
     const updateDimensions = () => {
       const screenWidth = window.innerWidth;
-      const screenHeight = window.innerHeight;
-      const a4Ratio = 1.414;
 
       let width;
       if (screenWidth < 500) width = screenWidth - 40;
@@ -30,15 +26,7 @@ function ResumeNew() {
       else if (screenWidth < 1024) width = 700;
       else width = 800;
 
-      let height = width * a4Ratio;
-      const maxHeight = screenHeight - 200;
-      if (height > maxHeight) {
-        height = maxHeight;
-        width = height / a4Ratio;
-      }
-
       setPageWidth(width);
-      setPageHeight(height);
     };
 
     updateDimensions();
@@ -47,15 +35,11 @@ function ResumeNew() {
   }, []);
 
   function onDocumentLoadSuccess({ numPages }) {
-    setLoading(false);
-    setError(null);
     console.log("PDF loaded successfully with", numPages, "pages");
   }
 
   function onDocumentLoadError(error) {
     console.error("Error loading PDF:", error);
-    setLoading(false);
-    setError("Failed to load PDF. Please check if the file exists.");
   }
 
   const handleDownload = () => {
@@ -68,91 +52,42 @@ function ResumeNew() {
   };
 
   return (
-    <div style={{ overflowX: "hidden" }}>
-      <Container
-        fluid
-        className="resume-section"
-        style={{
-          padding: 0,
-          margin: 0,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          minHeight: "100vh",
-        }}
-      >
+    <div>
+      <Container fluid className="resume-section">
         <Particle />
-
-        {/* Resume Preview */}
-        <Row
-          className="justify-content-center"
-          style={{ margin: "20px 0", paddingBottom: "20px" }}
-        >
-          <div
-            style={{
-              width: pageWidth,
-              minHeight: pageHeight,
-              border: "1px solid #ddd",
-              boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-              backgroundColor: "white",
-              overflow: "hidden",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              position: "relative",
-            }}
-          >
-            {loading && (
-              <div style={{ textAlign: "center", padding: "20px" }}>
-                <p>Loading PDF...</p>
-              </div>
-            )}
-            
-            {error && (
-              <div style={{ textAlign: "center", padding: "20px", color: "red" }}>
-                <p>{error}</p>
-              </div>
-            )}
-            
-            <Document 
-              file={pdfPath} 
-              onLoadSuccess={onDocumentLoadSuccess}
-              onLoadError={onDocumentLoadError}
-              loading={<div style={{ padding: "20px" }}>Loading document...</div>}
-              options={{
-                cMapUrl: 'https://unpkg.com/pdfjs-dist@3.11.174/cmaps/',
-                cMapPacked: true,
-              }}
-            >
-              <Page
-                pageNumber={1}
-                width={pageWidth}
-                renderTextLayer={false}
-                renderAnnotationLayer={false}
-                loading={<div style={{ padding: "20px" }}>Loading page...</div>}
-              />
-            </Document>
-          </div>
-        </Row>
-
-        {/* Download Button */}
-        <Row style={{ justifyContent: "center", margin: "20px 0" }}>
+        
+        <Row style={{ justifyContent: "center", position: "relative" }}>
           <Button
             variant="primary"
             onClick={handleDownload}
-            style={{
-              maxWidth: "250px",
-              cursor: "pointer",
-              transition: "all 0.3s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-2px)";
-              e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,123,255,0.3)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.boxShadow = "none";
-            }}
+            style={{ maxWidth: "250px", marginBottom: "20px" }}
+          >
+            <AiOutlineDownload />
+            &nbsp;Download CV
+          </Button>
+        </Row>
+
+        <Row className="resume" style={{ justifyContent: "center" }}>
+          <Document
+            file={pdfPath}
+            onLoadSuccess={onDocumentLoadSuccess}
+            onLoadError={onDocumentLoadError}
+            className="d-flex justify-content-center"
+          >
+            <Page 
+              pageNumber={1} 
+              width={pageWidth}
+              renderTextLayer={true}
+              renderAnnotationLayer={true}
+            />
+          </Document>
+        </Row>
+
+        <Row style={{ justifyContent: "center", position: "relative" }}>
+          <Button
+            variant="primary"
+            onClick={handleDownload}
+            style={{ maxWidth: "250px", marginTop: "20px" }}
           >
             <AiOutlineDownload />
             &nbsp;Download CV
